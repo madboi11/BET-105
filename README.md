@@ -1,19 +1,20 @@
 # Secondary Structure Analysis Pipeline
 
-This repository contains a Snakemake-based pipeline for analyzing protein secondary structure and computing backbone angles from PDB files.
+This repository contains a Snakemake-based pipeline for analyzing protein secondary structure and computing backbone angles from PDB files. The workflow processes compressed PDB files, extracts structural features, computes geometric angles, and generates distribution plots.
 
 ## Overview
 
 The pipeline performs the following steps:
 
 * Unzips `.pdb.gz` files
-* Runs STRIDE to extract secondary structure
-* Processes STRIDE output with contextual information
+* Runs STRIDE to assign secondary structure
+* Formats STRIDE output with context
 * Computes backbone angles
-* Generates plots for analysis
+* Generates KDE-based plots
 
 ## Directory Structure
 
+```
 .
 ├── secondary_structure_analysis.smk
 ├── run.sh
@@ -21,57 +22,35 @@ The pipeline performs the following steps:
 │   ├── stride_output_w_context.py
 │   ├── compute_angles_from_tsv.py
 │   └── plot_angles.py
+│
+├── results/                 # created automatically
+│   ├── angles/              # final angle files (.txt)
+│   ├── plots/               # generated plots (.png)
+│   └── valid_pdbs.txt       # list of valid PDBs used
+│
+├── unzipped_pdbs            # intermediate unzipped pdbs (temporary files)
+├── stride_out/              # intermediate STRIDE outputs
+├── stride_w_context/        # intermediate context TSV files
 
-## Requirements
-
-### System Dependencies
-
-* Python (>= 3.8)
-* STRIDE
-* gzip
-
-### Python Dependencies
-
-* pandas
-* numpy
-* matplotlib
-
-### Snakemake
-
-Install via conda:
-conda install -c bioconda snakemake
+```
 
 ## Input
 
-* Input files should be in `.pdb.gz` format
-* Update the PDB directory path in the Snakefile or config before running
+* Input files must be in `.pdb.gz` format
+* Update the `pdb_dir` path when running Snakemake
+
+---
 
 ## Running the Pipeline
 
-### Run full pipeline
+Once inside the correct environment and current working directory,
 
-snakemake --snakefile secondary_structure_analysis.smk -j <num_cores>
-
-### Run for a specific file
-
-snakemake --snakefile secondary_structure_analysis.smk results/angles/<pdb_id>.txt -j 1
-
-### Using run script
-
-bash run.sh
+```bash
+bash run.sh path/to/data
+```
 
 ## Output
 
-* Final angle files: `results/angles/`
-* Intermediate files: generated during execution
-* Plots: saved as image files
-
-## Notes
-
-* Ensure STRIDE is available in PATH
-* Use multiple cores for faster execution
-* Large datasets may take significant time
-
-## Author
-
-Developed as part of coursework/research work in protein structure analysis.
+* `results/angles/` → computed angle values
+* `results/plots/` → final KDE plots
+* `results/valid_pdbs.txt` → list of PDBs that contributed to plots
