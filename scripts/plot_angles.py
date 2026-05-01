@@ -21,10 +21,13 @@ COLORS = {
 def load_angles(angle_dir):
     data = defaultdict(list)
     valid_count = 0
+    valid_pdbs = set()
 
     for fpath in glob.glob(os.path.join(angle_dir, "*.txt")):
         if os.path.getsize(fpath) == 0:
             continue
+        
+        pdb_id = os.path.basename(fpath).replace(".txt", "")
 
         file_had_data = False
 
@@ -46,8 +49,9 @@ def load_angles(angle_dir):
 
         if file_had_data:
             valid_count += 1
+            valid_pdbs.add(pdb_id)
 
-    return data, valid_count
+    return data, valid_count, valid_pdbs
 
 
 def plot(data, valid_count, output_path):
@@ -115,7 +119,7 @@ def main():
     angle_dir = sys.argv[1]
     output_path = sys.argv[2]
 
-    data, valid_count = load_angles(angle_dir)
+    data, valid_count, valid_pdbs = load_angles(angle_dir)
 
     total = sum(len(v) for v in data.values())
 
@@ -127,6 +131,12 @@ def main():
         print(f"{size}: {len(data[size])}")
 
     plot(data, valid_count, output_path)
+
+    os.makedirs("results", exist_ok=True)
+
+    with open("results/valid_pdbs.txt", "w") as f:
+        for pdb in sorted(valid_pdbs):
+            f.write(pdb + "\n")
 
 
 if __name__ == "__main__":
