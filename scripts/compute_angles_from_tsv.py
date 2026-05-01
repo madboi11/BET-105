@@ -45,7 +45,6 @@ def side_chain_centroid(residue):
 
 
 def signed_angle(v1, v2, axis, degrees=True):
-    #print ([v1, v2])
     v1 = np.array(v1, dtype=float)
     v2 = np.array(v2, dtype=float)
     axis = np.array(axis, dtype=float)
