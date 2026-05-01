@@ -44,26 +44,25 @@ def side_chain_centroid(residue):
     return np.mean(coords, axis=0)
 
 
-def signed_angle(v1, v2, axis):
-    axis = np.array(axis, dtype=float)
+def signed_angle(v1, v2, axis, degrees=True):
+    #print ([v1, v2])
     v1 = np.array(v1, dtype=float)
     v2 = np.array(v2, dtype=float)
+    axis = np.array(axis, dtype=float)
 
-    if np.linalg.norm(axis) < 1e-8:
-        return None
-
+    v1 /= np.linalg.norm(v1)
+    v2 /= np.linalg.norm(v2)
     axis /= np.linalg.norm(axis)
-    v1 = v1 - np.dot(v1, axis) * axis   # project out axis component
-    v2 = v2 - np.dot(v2, axis) * axis
 
-    n1, n2 = np.linalg.norm(v1), np.linalg.norm(v2)
-    if n1 < 1e-8 or n2 < 1e-8:
-        return None
+    cross = np.cross(v1, v2)
+    dot = np.dot(v1, v2)
 
-    v1 /= n1
-    v2 /= n2
+    angle = np.arctan2(
+        np.dot(cross, axis),
+        dot
+    )
 
-    return np.degrees(np.arctan2(np.dot(np.cross(v1, v2), axis), np.dot(v1, v2)))
+    return np.degrees(angle) if degrees else angle
 
 
 def build_residue_index(structure):

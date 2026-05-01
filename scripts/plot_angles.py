@@ -72,6 +72,9 @@ def plot(data, valid_count, output_path):
         angles = np.array(data[size])
         if len(angles) < 10:
             continue
+        
+        angles = np.array(angles)
+        angles = angles[np.isfinite(angles)]
 
         kde = gaussian_kde(angles, bw_method=0.15)
         ax.plot(x, kde(x), color=COLORS[size], linewidth=2.5, label=size)
