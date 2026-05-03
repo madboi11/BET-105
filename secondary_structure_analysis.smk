@@ -2,7 +2,7 @@ import glob
 import os
 
 PDB_DIR = config["pdb_dir"]
-PDBS = [os.path.basename(f).replace(".pdb.gz", "") for f in glob.glob(os.path.join(PDB_DIR, "*.pdb.gz"))][30000:]
+PDBS = [os.path.basename(f).replace(".pdb.gz", "") for f in glob.glob(os.path.join(PDB_DIR, "*.pdb.gz"))]
 
 rule all:
     input:
